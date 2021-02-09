@@ -260,6 +260,9 @@ type IDToken struct {
 	// This package ensures the audience contains an expected value.
 	Audience []string
 
+	// AWS Cognito alternative to Audience.
+	ClientID string
+
 	// A unique string which identifies the end user.
 	Subject string
 
@@ -343,6 +346,7 @@ type idToken struct {
 	Issuer       string                 `json:"iss"`
 	Subject      string                 `json:"sub"`
 	Audience     audience               `json:"aud"`
+	ClientID     clientID               `json:"client_id"`
 	Expiry       jsonTime               `json:"exp"`
 	IssuedAt     jsonTime               `json:"iat"`
 	NotBefore    *jsonTime              `json:"nbf"`
@@ -358,6 +362,7 @@ type claimSource struct {
 }
 
 type audience []string
+type clientID string
 
 func (a *audience) UnmarshalJSON(b []byte) error {
 	var s string

@@ -240,6 +240,7 @@ func (v *IDTokenVerifier) Verify(ctx context.Context, rawIDToken string) (*IDTok
 		Issuer:            token.Issuer,
 		Subject:           token.Subject,
 		Audience:          []string(token.Audience),
+		ClientID:          string(token.ClientID),
 		Expiry:            time.Time(token.Expiry),
 		IssuedAt:          time.Time(token.IssuedAt),
 		Nonce:             token.Nonce,
@@ -267,6 +268,8 @@ func (v *IDTokenVerifier) Verify(ctx context.Context, rawIDToken string) (*IDTok
 		if v.config.ClientID != "" {
 			if !contains(t.Audience, v.config.ClientID) {
 				return nil, fmt.Errorf("oidc: expected audience %q got %q", v.config.ClientID, t.Audience)
+			} else if t.ClientID != v.config.ClientID {
+				return nil, fmt.Errorf("oidc: expected client id %q got %q", v.config.ClientID, t.ClientID)
 			}
 		} else {
 			return nil, fmt.Errorf("oidc: invalid configuration, clientID must be provided or SkipClientIDCheck must be set")
