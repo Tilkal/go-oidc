@@ -266,7 +266,7 @@ func (v *IDTokenVerifier) Verify(ctx context.Context, rawIDToken string) (*IDTok
 	// This check DOES NOT ensure that the ClientID is the party to which the ID Token was issued (i.e. Authorized party).
 	if !v.config.SkipClientIDCheck {
 		if v.config.ClientID != "" {
-			if !contains(t.Audience, v.config.ClientID) {
+			if t.Audience != nil && len(t.Audience) > 0 && !contains(t.Audience, v.config.ClientID) {
 				return nil, fmt.Errorf("oidc: expected audience %q got %q", v.config.ClientID, t.Audience)
 			} else if t.ClientID != v.config.ClientID {
 				return nil, fmt.Errorf("oidc: expected client id %q got %q", v.config.ClientID, t.ClientID)
