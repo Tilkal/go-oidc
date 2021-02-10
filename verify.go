@@ -268,8 +268,14 @@ func (v *IDTokenVerifier) Verify(ctx context.Context, rawIDToken string) (*IDTok
 		if v.config.ClientID != "" {
 			if t.Audience != nil && len(t.Audience) > 0 && !contains(t.Audience, v.config.ClientID) {
 				return nil, fmt.Errorf("oidc: expected audience %q got %q", v.config.ClientID, t.Audience)
-			} else if t.ClientID != v.config.ClientID {
+			}
+
+			if t.ClientID != "" && t.ClientID != v.config.ClientID {
 				return nil, fmt.Errorf("oidc: expected client id %q got %q", v.config.ClientID, t.ClientID)
+			}
+
+			if (t.Audience == nil || len(t.Audience) == 0) && t.ClientID == "" {
+				return nil, fmt.Errorf("oidc: expected an audience / a client id to be specified")
 			}
 		} else {
 			return nil, fmt.Errorf("oidc: invalid configuration, clientID must be provided or SkipClientIDCheck must be set")
