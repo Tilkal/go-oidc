@@ -153,8 +153,27 @@ func TestVerifyAudience(t *testing.T) {
 			signKey: newRSAKey(t),
 		},
 		{
+			name:    "good client id",
+			idToken: `{"iss":"https://foo","client_id":"client1"}`,
+			config: Config{
+				ClientID:        "client1",
+				SkipExpiryCheck: true,
+			},
+			signKey: newRSAKey(t),
+		},
+		{
 			name:    "mismatched audience",
 			idToken: `{"iss":"https://foo","aud":"client2"}`,
+			config: Config{
+				ClientID:        "client1",
+				SkipExpiryCheck: true,
+			},
+			signKey: newRSAKey(t),
+			wantErr: true,
+		},
+		{
+			name:    "mismatched client id",
+			idToken: `{"iss":"https://foo","client_id":"client2"}`,
 			config: Config{
 				ClientID:        "client1",
 				SkipExpiryCheck: true,
